@@ -1,7 +1,67 @@
 # In-Class Programming Activity, Day 5
 
-Your work goes here ...
+## Marcio Porto
 
+## Task 1
+
+```{r}
+library("mosaicData", lib.loc="~/R/library")
+data(Galton, package = "mosaicData")
+nbins <- 10
+```
+
+## Task 2
+
+```{r}
+evenly_spaced <- seq(min(Galton$height), max(Galton$height), length.out = nbins + 1)
+```
+
+## Task 3
+
+```{r}
+bin_counts <- table(cut(Galton$height, evenly_spaced))
+```
+
+## Task 4
+
+```{r}
+# Make a data frame, hist_basics, that contains three variables, xL, xR, and count. The xL variable should be the values of evenly_spaced except for the last one. The xR variable should be the values of evenly_spaced except for the first one. count will be the same as as.numeric(bin_counts).
+hist_basics <- data.frame(xL = , 
+                          xR = ,
+                          count = as.numeric(bin_counts))
+```
+
+## Task 5
+
+```{r}
+make_one_bar <- function(point) {
+  xLeft <- point$xL
+  xRight <- point$xR
+  height <- point$count
+  res <- data.frame(
+              x = c(xLeft,  xLeft,  xRight, xRight, NA),
+              y = c(    0, height,  height,      0, NA)
+  )
+  res
+}
+
+one_to_five <- function(hist_data) {
+  bars <- NULL
+  for (k in 1:nrow(hist_data)) {
+    new_bar <- make_one_bar(hist_data[k, ])
+    bars <- rbind(bars, new_bar)
+  }
+  bars
+}
+```
+
+## Task 6
+
+```{r}
+#plot(My_bars, type="n")
+#lines(My_bars)
+#polygon(My_bars)
+```
 
 
 ## Test statements
@@ -9,3 +69,9 @@ Your work goes here ...
 ```{r}
 scoreActivity::score253(5)
 ```
+
+
+
+
+
+
