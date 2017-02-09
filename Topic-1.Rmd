@@ -1,2 +1,266 @@
 # Topic 1 Exercises
 
+*Marcio Porto*
+
+# Exercise 1 in ISL § 2.4
+
+## (a)
+
+Having a large number of observations, a more flexible model will be best since we will be able to create a better fit, more trustworthy model. Also, since p is small, interpretability won't be much of a problem.
+
+## (b)
+
+An inflexible model is best here to aid with interpretability. We also don't have a large n, so we shouldn't risk overfitting on a small number of observations.
+
+## (c)
+
+If the relationship between the predictors and the response is non-linear, a flexible model will be a better fit since it will be able to better handle the non-linearity in the data.
+
+## (d)
+
+A flexible model fit too much of the noise in this case, so we should go with a more inflexible one.
+
+# Exercise 3 in ISL § 2.4
+
+## (a)
+
+Explained below.
+
+## (b)
+
+Bias curve = It starts out by decreasing fast as we increase flexibility, but then it slows down and ends in an almost straight line. This is because more flexible models have lower bias.
+
+Variance curve = Opposite of the bias curve. This one grows very slowly at first, but then it speeds up as we increase flexibility. This is because more flexible models have higher variance.
+
+Training error curve = It starts out above the Bayes error curve and it decreases as we increase flexibility. Going under the Bayes error curve happens because of overfitting.
+
+Test error curve = Always stays above the Bayes error curve and has a U-shape. Has its lower value still above the Bayes error curve since there will always be some error in classification and it is not possible to actually go under the irreducible error.
+
+Bayers error curve = A straight line at y = 1, which corresponds to the irreducible error.
+
+# Exercise 6 in ISL § 2.4
+
+The parametric approach requires assumptions about the shape of the model, while a non-parametric approach seeks an estimate of f that gets as close to the data points as possible.
+
+The parametric approach doesn't require a high number of observations, but it may not find the best possible fit for the data depensing on the initial assumptions.
+
+The non-parametric approach usually offers a better fit for the data, but it requires a lot more observations in order to do so.
+
+# Exercise 8 in ISL § 2.4
+
+## (a)
+
+```{r}
+library(ISLR, quietly = TRUE)
+data(College, package = "ISLR")
+```
+
+## (b)
+
+Not applicable since I am using the data directly from ISLR, and it is ready for use.
+
+## (c)
+
+### (i)
+
+```{r}
+summary(College)
+```
+
+### (ii)
+
+```{r}
+pairs(College[,1:10])
+```
+
+### (iii)
+
+```{r}
+plot(College$Private, College$Outstate)
+
+```
+
+### (iv)
+
+```{r}
+Elite <- rep("No", nrow(College))
+Elite[College$Top10perc > 50] <- "Yes"
+Elite <- as.factor(Elite)
+College <- data.frame(College , Elite)
+
+summary(College$Elite)
+
+plot(College$Elite, College$Outstate)
+```
+
+### (v)
+
+```{r}
+par(mfrow=c(2, 2))
+hist(College$Books, 10)
+hist(College$Expend, 6)
+hist(College$Grad.Rate, 5)
+hist(College$Enroll, 10)
+```
+
+### (vi)
+
+```{r}
+plot(College$Elite, College$perc.alumni)
+```
+
+I thought it was interesting how the percentage of alumni who donate to their school is higher for elite colleges. This is likely because those alumni tend to have higher incomes, but I imagine school pride might also be a factor here.
+
+# Exercise 9 in ISL § 2.4
+
+## (a)
+```{r}
+sapply(Auto, class)
+```
+All the predictors are quantitative, expect for the *name* predictor, which is qualitative.
+## (b)
+```{r}
+range(Auto$mpg)
+range(Auto$cylinders)
+range(Auto$displacement)
+range(Auto$horsepower)
+range(Auto$weight)
+range(Auto$acceleration)
+range(Auto$year)
+range(Auto$origin)
+```
+## (c)
+```{r}
+mean(Auto$mpg)
+sd(Auto$mpg)
+mean(Auto$cylinders)
+sd(Auto$cylinders)
+mean(Auto$displacement)
+sd(Auto$displacement)
+mean(Auto$horsepower)
+sd(Auto$horsepower)
+mean(Auto$weight)
+sd(Auto$weight)
+mean(Auto$acceleration)
+sd(Auto$acceleration)
+mean(Auto$year)
+sd(Auto$year)
+mean(Auto$origin)
+sd(Auto$origin)
+```
+## (d)
+```{r}
+subAuto <- Auto[-c(10,85)]
+
+range(subAuto$mpg)
+mean(subAuto$mpg)
+sd(subAuto$mpg)
+
+range(subAuto$cylinders)
+mean(subAuto$cylinders)
+sd(subAuto$cylinders)
+
+range(subAuto$displacement)
+mean(subAuto$displacement)
+sd(subAuto$displacement)
+
+range(subAuto$horsepower)
+mean(subAuto$horsepower)
+sd(subAuto$horsepower)
+
+range(subAuto$weight)
+mean(subAuto$weight)
+sd(subAuto$weight)
+
+range(subAuto$acceleration)
+mean(subAuto$acceleration)
+sd(subAuto$acceleration)
+
+range(subAuto$year)
+mean(subAuto$year)
+sd(subAuto$year)
+
+range(subAuto$origin)
+mean(subAuto$origin)
+sd(subAuto$origin)
+```
+
+## (e)
+
+```{r}
+plot(Auto$acceleration, Auto$weight, xlab="acceleration", ylab="weight")
+```
+
+The higher the weight of a car, the lower its acceleration. The relationship here is not too strong, and the values are spread out. But we can see that the points in the right (higher acceleration) have a lower y value (weight).
+
+```{r}
+plot(Auto$acceleration, Auto$displacement, xlab="acceleration", ylab="displacement")
+```
+
+The higher the displacement, the lower the car's acceleration. We can see that the points in the right (higher acceleration) have a lower y value (displacement).
+
+## (f)
+
+```{r}
+plot(Auto$mpg, Auto$weight, xlab="mpg", ylab="weight")
+```
+
+It seems that the higher the weight of a car, the lower its mpg. We can see that the points in the right (higher mpg) have a lower y value (weight).
+
+```{r}
+plot(Auto$mpg, Auto$horsepower, xlab="mpg", ylab="horsepower")
+```
+
+It seems that the higher the horsepower of a car, the lower its mpg. We can see that the points in the right (higher mpg) have a lower y value (horsepower).
+
+# Exercise 2 in ISL § 2.4
+
+## (a)
+
+It is a regression problem since we are only looking at quantitative variables.
+We are most interested in infering the relationship between CEO salary and the other variables.
+n = 500
+p = 4 (profit, number of employees, industry and CEO salary)
+
+## (b)
+
+It is a classification problem since we are trying to classify whether the nre product will be a success or a failure.
+We are most interested in predicting the success or failure of the product.
+n = 20
+p = 14 (whether it was a success or failure, price
+charged for the product, marketing budget, competition price,
+and 10 other variables)
+
+## (c)
+
+It is a regression problem since the outcome is a quantitative value.
+We are most interested in predicting the % change in US dollar for future weeks.
+n = 52 (number of weeks in a year)
+p = 4 (% change in the dollar, the % change in the US market,
+the % change in the British market, and the % change in the
+German market)
+
+# Exercise 7 in ISL § 2.4
+
+## (a)
+
+```{r}
+sqrt((0-0)^2 + (3-0)^2 + (0-0)^2)
+sqrt((2-0)^2 + (0-0)^2 + (0-0)^2)
+sqrt((0-0)^2 + (1-0)^2 + (3-0)^2)
+sqrt((0-0)^2 + (1-0)^2 + (2-0)^2)
+sqrt((-1-0)^2 + (0-0)^2 + (1-0)^2)
+sqrt((1-0)^2 + (1-0)^2 + (1-0)^2)
+```
+
+## (b)
+
+Green. When K=1, we only consider the closest observation, #5, which has a Y of "Green".
+
+## (c)
+
+Red. Adding the next 2 closest observations (#6 and #2, both of which have a Y of "Red") we have a 1/3 chance that it is green and a 2/3 chance that it is red. We go with the higher probability.
+
+## (d)
+
+As K grows, the model becomes less flexible, which would be better suited for linear distributions. Therefore, we expect the best value for K to be small.
