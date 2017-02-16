@@ -1,8 +1,33 @@
 # In-Class Programming Activity, Day 7
 
-Your work goes here ...
+## Márcio Porto
 
+## Task 1
 
+```{r}
+vals <- rexp(10, 1/100)
+```
+
+## Task 2
+
+```{r}
+test200 <- sum(log(dexp(vals, rate = 1/200, log = FALSE)))
+test200
+```
+
+## Task 3
+
+```{r}
+LL_exp <- function(rate){
+  sum(log(dexp(vals, rate = rate, log = FALSE)))
+}
+LL_exp(1/200)
+```
+
+## Task 4
+
+```{r}
+```
 
 ## Test statements
 
