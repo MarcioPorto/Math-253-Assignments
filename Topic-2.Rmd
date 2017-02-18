@@ -1,2 +1,263 @@
 # Topic 2 Exercises: Linear Regression
 
+*Marcio Porto*
+
+# Computing Problems
+
+## ISL § 3.6
+
+### 3.6.1
+
+```{r}
+library(MASS)
+library(ISLR)
+```
+
+### 3.6.2
+
+```{r}
+names(Boston)
+lm.fit=lm(medv ~ lstat, data=Boston)
+summary(lm.fit)
+names(lm.fit)
+coef(lm.fit)
+confint(lm.fit)
+# predict(lm.fit, data.frame(lstat=(c(5, 10, 15))), interval="confidence")
+# predict(lm.fit, data.frame(lstat=(c(5, 10, 15))), interval="prediction")
+plot(Boston$lstat, Boston$medv)
+abline(lm.fit)
+
+par(mfrow=c(2,2))
+plot(lm.fit)
+
+par(mfrow=c(1,1))
+plot(predict (lm.fit), residuals (lm.fit))
+plot(predict (lm.fit), rstudent (lm.fit))
+
+plot(hatvalues (lm.fit))
+which.max(hatvalues (lm.fit))
+```
+
+### 3.6.3
+
+```{r}
+lm.fit=lm(medv ~ lstat + age, data=Boston)
+summary(lm.fit)
+
+lm.fit=lm(medv ~ ., data=Boston)
+summary(lm.fit)
+
+library(car)
+vif(lm.fit)
+
+lm.fit1=lm(medv ~ .-age, data=Boston)
+summary(lm.fit1)
+```
+
+### 3.6.4
+
+```{r}
+summary(lm(medv ~ lstat * age, data=Boston))
+```
+
+### 3.6.5
+
+```{r}
+lm.fit2=lm(medv ~ lstat + I(lstat^2), data=Boston)
+summary(lm.fit2)
+
+lm.fit=lm(medv ~ lstat, data=Boston)
+anova(lm.fit, lm.fit2)
+
+par(mfrow=c(2,2))
+plot(lm.fit2)
+par(mfrow=c(1,1))
+
+lm.fit5 = lm(medv ~ poly(lstat, 5), data=Boston)
+summary(lm.fit5)
+
+summary(lm(medv ~ log(rm), data=Boston))
+```
+
+### 3.6.6
+
+```{r}
+data(Carseats, package = "ISLR")
+
+names(Carseats)
+
+lm.fit=lm(Sales ~ .+Income:Advertising + Price:Age, data=Carseats)
+summary(lm.fit)
+# contrasts(Carsets$ShelveLoc)
+```
+
+### 3.6.7
+
+```{r}
+LoadLibraries = function () {
+  library(ISLR)
+  library(MASS)
+  print("The libraries have been loaded .")
+}
+LoadLibraries()
+```
+
+## Exercise 13 in ISL § 2.4
+
+```{r}
+set.seed(1)
+```
+
+### a)
+
+```{r}
+x <- rnorm(100, mean=0, sd=sqrt(1))
+```
+
+### b)
+
+```{r}
+eps <- rnorm(100, mean=0, sd=sqrt(0.25))
+```
+
+### c)
+
+```{r}
+y = -1 + 0.5 * x + eps
+length(y)
+```
+
+The length of y will be 100 (same as the length of x),
+B0 = -1,
+B1 = 0.5
+
+### d)
+
+```{r}
+plot(x, y)
+```
+
+There seems to be a positive relationship between the the two variables, indicating that y tends to grow as x grows.
+
+### e)
+
+```{r}
+mod1 <- lm(y ~ x)
+summary(mod1)
+```
+
+The estimates are pretty close to the real values. B0 is -1 and was estimated as -1.02, and B1 is 0.5 and was estimated as 0.499.
+
+### f)
+
+```{r}
+plot(x, y)
+abline(mod1)
+```
+
+### g)
+
+```{r}
+mod2 <- lm(y ~ x + I(x^2))
+summary(mod2)
+```
+
+There doesn't seem to be much of an improvement with this model. The p values are identical between the two models.
+
+### h)
+
+```{r}
+x <- rnorm(100, mean=0, sd=sqrt(1))
+eps <- rnorm(100, mean=0, sd=sqrt(0.1))
+y = -1 + 0.5 * x + eps
+length(y)
+plot(x, y)
+```
+
+Compared to the original model, there is less noise in this graph. We can see that the observations are more clustered together.
+
+```{r}
+mod3 <- lm(y ~ x)
+summary(mod1)
+plot(x, y)
+abline(mod3)
+```
+
+### i)
+
+```{r}
+x <- rnorm(100, mean=0, sd=sqrt(1))
+eps <- rnorm(100, mean=0, sd=sqrt(1))
+y = -1 + 0.5 * x + eps
+length(y)
+plot(x, y)
+```
+
+Compared to the original model, there is more noise in this graph. We can see that the observations are more spread out.
+
+```{r}
+mod4 <- lm(y ~ x)
+summary(mod1)
+plot(x, y)
+abline(mod4)
+```
+
+### j)
+
+```{r}
+predict(mod1, data.frame(x=(c(5, 10, 15))), interval="confidence")
+predict(mod3, data.frame(x=(c(5, 10, 15))), interval="confidence")
+predict(mod4, data.frame(x=(c(5, 10, 15))), interval="confidence")
+```
+
+As we can see from the predictions above, the more noisy the dataset, the broader the confidence interval. This makes sense because if the data we're trying to model is very spread out, fitting a linear model to it will lead to less confidence since there is more variance.
+
+# Theory Problems:
+
+## Page 66:
+
+As the value for TV grows, the variance grows with it. Therefore the errors are correlated with the common variance. We can see this by looking at how long the grey error lines are. At first they are very short, but they get longer as the value for TV grows.
+
+## Page 77:
+
+If *p* > *n*, then we simply don`t have enough observations to create an appropriate model.
+
+## ISL § 3.7.3
+
+### a)
+
+*iii* is true here. Even though the Gender coefficient seems to suggest that females will earn more, this is counteracted by the interaction between GPA and Gender. That coefficient is negative, but it doesn't affect males since the number representing them is 0. Keeping GPA and IQ constant, if the GPA is higher than 3.5 then males will earn more, if it is equal to 3.5 male and females will earn the same, and if it is lower than 3.5 then females will earn more.
+
+### b)
+
+```{r}
+# 50 + 20*GPA + 0.07*IQ + 35*Gender + 0.01*GPA_IQ - 10*GPA_Gender
+50 + 20*4 + 0.07*110 + 35*1 + 0.01*440 - 10*4
+```
+
+### c)
+
+False. This is not necessarily true. The reason why the coefficient is so small is due to the fact that multiplying these two numbers ends up being a relatively high number compared to the other numbers that are being multiplied. The same can be seen for the IQ coefficient. It has a low magnitude because IQ is usually a higher number than GPA or Gender in this example. This has nothing to do with whether there is an interaction or not.
+
+## ISL § 3.7.4
+
+### a)
+
+For the training data, the more flexible the model, the better the fit and the lower the RSS. Therefore, the RSS for the linear regression will be higher than the one for the cubic regression.
+
+### b)
+
+For the test data, there is not enough information. For this particular dataset, we don't have a graph for the MSE (test) curve. Unlike, the MSE (training) curve, which is always decreasing, the MSE (test) starts increasing again after we reach the ideal flexibility.
+
+### c)
+
+For the training data, the same logic still applies. The more flexible the model, the lower the RSS.
+
+### d)
+
+For the test data, this new information suggests that RSS will be lower for the cubic model, but we can't be 100% sure because we still don't know how far from linear the true relationship is.
+
+
+
+
+
