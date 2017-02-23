@@ -45,12 +45,18 @@ best <- optim(starting_params, LL_line, control=list(fnscale = -1))
 ```{r}
 load(url("http://tiny.cc/dcf/Taxi_trips.rda"))
 
-#taxi_likelihood() <- function(params){
-#  fare_amount - (base_fare + per_mile*trip_distance)
-#}
+taxi_likelihood <- function(params, data=Taxi_trips) {
+  base_fare <- params[1]
+  per_mile <- params[2]
+  rate <- 1/params[3]
+  excess <- with(data, fare_amount - (base_fare + per_mile * trip_distance))
+  sum(log(dexp(excess, rate) + 1e-5))
+}
 
-#starting_params <- c(2.00, 4.00, 1/3)
-#best <- optim(starting_params, taxi_likelihood, control=list(fnscale = -1))
+starting_params <- c(2.0, 4.0, 0.5)
+best <- optim(starting_params, taxi_likelihood, control=list(fnscale = -1), data=Taxi_trips)
+plot(fare_amount ~ trip_distance, data=Taxi_trips)
+abline(best$par[1], best$par[2], col="red")
 ```
 
 
