@@ -1,8 +1,49 @@
 # In-Class Programming Activity, Day 10
 
-Your work goes here ...
+## Marcio Porto
 
+## Task 1
 
+```{r}
+library(ISLR)
+```
+
+```{r}
+logistic <- function(x) {
+  exp(x) / (1 + exp(x))
+}
+logistic(c(2, 3))
+```
+
+```{r}
+linear_combine <- function(data, coefs) {
+  result <- 0
+  for (nm in names(coefs)) {
+    if (nm == "intercept") {
+      result <- result + coefs[[nm]]
+    } else if (!data[[nm]]) {
+      stop()
+    } else {
+      result <- result + coefs[[nm]] * data[[nm]]
+    }
+  }
+}
+linear_combine(data = Default, coefs = c(intercept = 3, balance = 0.00001, income = -0.0002))
+```
+
+```{r}
+LL_logistic <- function(data, coefs, outcome) {
+  r <- linear_combine(data, coefs)
+  p <- logistic(r)
+  if (outcome == FALSE) {
+    p <- 1 - p
+  }
+}
+#LL_logistic(data=Default, 
+#            coefs = c(intercept = 1, income = -0.0001), 
+#            outcome = Default$default == "Yes")
+# Should output [1] -2425.733
+```
 
 ## Test statements
 
