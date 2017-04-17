@@ -11,8 +11,7 @@ vals <- rexp(10, 1/100)
 ## Task 2
 
 ```{r}
-test200 <- sum(log(dexp(vals, rate = 1/200, log = FALSE)))
-test200
+test200 <- sum(log(dexp(vals, rate = 1/200)))
 ```
 
 ## Task 3
@@ -21,12 +20,33 @@ test200
 LL_exp <- function(rate){
   sum(log(dexp(vals, rate = rate, log = FALSE)))
 }
-LL_exp(1/200)
 ```
 
 ## Task 4
 
 ```{r}
+rates <- c(1/50, 1/75, 1/100, 1/125, 1/150, 1/175, 1/200)
+```
+
+## Task 5
+
+```{r}
+results <- sapply(rates, LL_exp)
+```
+
+## Task 6
+
+```{r}
+plot(results, 1/rates)
+argmax <- 1/75
+```
+
+## Task 7
+
+```{r}
+exp_results <- optimize(LL_exp, 
+                        lower=1/200, upper=1/50,
+                        maximum = TRUE)
 ```
 
 ## Test statements
