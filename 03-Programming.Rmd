@@ -2,14 +2,6 @@
 
 ## Márcio Porto
 
-
-
-## Test statements
-
-```{r}
-scoreActivity::score253(3)
-```
-
 ## Task 1
 
 ```{r}
@@ -54,9 +46,14 @@ Yield_mod2 <- lm(Yield ~ Top10perc + Outstate + Expend, data=Test_data)
 
 Y_test <- Test_data$Yield
 fhat_test <- predict(Yield_mod2, newdata = Test_data)
-MSE_train = mean((Y_test - fhat_test)^2)
+MSE_test = mean((Y_test - fhat_test)^2)
 ```
 
+## Test statements
+
+```{r}
+scoreActivity::score253(3)
+```
 
 
 
