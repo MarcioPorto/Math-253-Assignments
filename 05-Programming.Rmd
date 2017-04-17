@@ -26,8 +26,8 @@ bin_counts <- table(cut(Galton$height, evenly_spaced))
 
 ```{r}
 # Make a data frame, hist_basics, that contains three variables, xL, xR, and count. The xL variable should be the values of evenly_spaced except for the last one. The xR variable should be the values of evenly_spaced except for the first one. count will be the same as as.numeric(bin_counts).
-hist_basics <- data.frame(xL = , 
-                          xR = ,
+hist_basics <- data.frame(xL = evenly_spaced[c(1:(length(evenly_spaced)-1))], 
+                          xR = evenly_spaced[c(2:(length(evenly_spaced)))],
                           count = as.numeric(bin_counts))
 ```
 
@@ -53,14 +53,16 @@ one_to_five <- function(hist_data) {
   }
   bars
 }
+
+My_bars <- one_to_five(hist_basics) 
 ```
 
 ## Task 6
 
 ```{r}
-#plot(My_bars, type="n")
-#lines(My_bars)
-#polygon(My_bars)
+plot(My_bars, type="n")
+lines(My_bars)
+polygon(My_bars)
 ```
 
 
