@@ -1,11 +1,48 @@
 # In-Class Programming Activity, Day 2
 
-Your work goes here ...
+## Marcio Porto
 
+## Task 1
 
+```{r}
+# download.file("http://www-bcf.usc.edu/~gareth/ISL/Auto.csv",
+#              destfile="Auto.csv")
+auto_file_name = "/home/local/MAC/mporto/Math_253_Assignments/Auto.csv"
+```
+
+## Task 2
+
+```{r}
+Auto = read.csv(auto_file_name)
+```
+
+## Task 3
+
+```{r}
+task3 = summary(Auto$horsepower)
+```
+
+## Task 4
+
+```{r}
+library(ISLR)
+```
+
+## Task 5
+
+```{r}
+task5top = Auto[c(1,2,3,4,5),c(1,2,3)]
+r = nrow(Auto)
+c = ncol(Auto)
+task5bottom = Auto[(r-4):r,(c-2):c]
+```
 
 ## Test statements
 
 ```{r}
 scoreActivity::score253(2)
 ```
+
+
+
+
