@@ -60,7 +60,6 @@ abline(best$par[1], best$par[2], col="red")
 ```
 
 
-
 ## Test statements
 
 ```{r}
