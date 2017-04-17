@@ -3,17 +3,10 @@
 ## Marcio Porto
 
 
-
-## Test statements
-
-```{r}
-scoreActivity::score253(1)
-```
-
 ## Task 1
 
 ```{r}
-library(mosaicData)
+library(mosaic)
 ```
 
 ## Task 2
@@ -25,23 +18,35 @@ task2 = "Today is Thurs Jan 19 2:46 2017"
 ## Task 3
 
 ```{r}
-task3a = ""
-task3b = ""
-task3c = ""
+task3a = names(mosaicData::Galton)
+task3b = nrow(mosaicData::Galton)
+task3c = mean(mosaicData::Galton$height)
 ```
 
 ## Task 4
 
 ```{r}
-task4 = ""
+task4 = matrix( 
+   c(1, 2, 3, 4, 5, 6), 
+   nrow=2, 
+   ncol=3, 
+   byrow = TRUE) 
 ```
 
 ## Task 5
 
 ```{r}
-task5x = ""
-task5y = ""
-task5pi = ""
+task5x = c(runif(100, 0, 1))
+task5y = c(runif(100, 0, 1))
+task5pi = (length(which(sqrt(task5x^2 + task5y^2) < 1)) / 100) * 4
+```
+
+## Test statements
+
+task5pi the value of ππ estimated from a “Monte Carlo” simulation. That is, for each of task5x and task5y, square the vector. Then add them together and take the square root. This will give the length from the origin to each of 1000 random points in the unit square in the first quadrant. Finally, compute what fraction of these lengths are ≤1≤1. That fraction is an estimate of π/4
+
+```{r}
+scoreActivity::score253(1)
 ```
 
 
