@@ -1,2 +1,167 @@
 # Topic 6 Exercises: Selecting Model Terms
 
+## Márcio Porto
+
+## Theory 
+
+### 6.8.1
+
+#### a)
+
+The model with k predictors that has the smallest training RSS is the one from best subset selection because it is selected from among all possible models with k predictors.
+
+#### b)
+
+Probably best subset selection because it considers more models than the other methods, but the other methods can also potentially pick a model with a lower test RSS.
+
+#### c)
+
+##### i)
+
+True. A k+1 model is simply a k model augmented with 1 extra predictor.
+
+##### ii)
+
+True. A model with k predictors is just a model where a predictor from the k+1 model was removed.
+
+##### iii)
+
+False. We can't establish a relationship between forward and backward selection like that.
+
+##### iv)
+
+False. We can't establish a relationship between forward and backward selection like that.
+
+##### v)
+
+False. Not necessarily, since a k+1 model does not need to include all the predictors from a specific k model in best subset selection.
+
+### 6.8.2
+
+#### a)
+
+iii. The lasso is able to trade off a small increase in bias by a high decrease in variance to produce a better prediction.
+
+#### b)
+
+iii. Ridge regression is also able to trade off a small increase in bias by a high decrease in variance to produce a better prediction.
+
+#### c)
+
+ii. Non-linear methods are by definition more flexible, offering an improvement in prediction accuracy the opposite way compared to the methods above.
+
+## Applied 
+
+### 6.8.9
+
+#### a)
+
+```{r}
+library(ISLR)
+library(glmnet)
+
+data(College)
+set.seed(1)
+
+train = sample(1:dim(College)[1], dim(College)[1] / 2)
+test = -train
+College.train = College[train,]
+College.test = College[test,]
+```
+
+#### b)
+
+```{r}
+lm = lm(Apps ~ ., data=College.train)
+pred_lm = predict(lm, College.test)
+mean((pred_lm - College.test$Apps)^2)
+```
+
+Test error = 1108531
+
+#### c)
+
+```{r}
+train.mat = model.matrix(Apps ~ ., data=College.train)
+test.mat = model.matrix(Apps ~ ., data=College.test)
+
+grid = 10 ^ seq(4, -2, length = 100)
+
+ridge = glmnet(train.mat, College.train$Apps, alpha = 0, lambda = grid, thresh = 1e-12)
+
+cv_ridge = cv.glmnet(train.mat, College.train$Apps, alpha = 0, lambda = grid, thresh = 1e-12)
+
+bestlambda = cv_ridge$lambda.min
+pred_ridge = predict(ridge, s=bestlambda, newx = test.mat)
+mean((pred_ridge - College.test$Apps)^2)
+```
+
+Test error = 1108512
+
+#### d)
+
+```{r}
+lasso = glmnet(train.mat, College.train$Apps, alpha = 1, lambda = grid, thresh = 1e-12)
+
+cv_lasso = cv.glmnet(train.mat, College.train$Apps, alpha = 1, lambda = grid, thresh = 1e-12)
+
+bestlambda = cv_lasso$lambda.min
+
+pred_lasso = predict(lasso, s = bestlambda, newx = test.mat)
+mean((pred_lasso - College.test$Apps)^2)
+
+predict(lasso, s = bestlambda, type = "coefficients")
+```
+
+Test error = 1028718
+All but 3 are non-zero coefficient estimates.
+
+#### e)
+
+```{r}
+library(pls)
+
+pcr = pcr(Apps ~ ., data=College.train, scale=TRUE, validation="CV")
+
+pred_pcr = predict(pcr, College.test, ncomp=10)
+mean((pred_pcr - College.test$Apps)^2)
+```
+
+Test error = 1505718
+
+#### f)
+
+```{r}
+pls = plsr(Apps ~ ., data=College.train, scale=TRUE, validation="CV")
+
+pred_pls = predict(pls, College.test, ncomp = 10)
+mean((pred_pls - College.test$Apps)^2)
+```
+
+Test error = 1134531
+
+#### g)
+
+```{r}
+test.avg = mean(College.test$Apps)
+
+# Test R-squared
+
+# LM
+1 - mean((pred_lm - College.test$Apps)^2) / mean((test.avg - College.test$Apps)^2)
+
+# Ridge
+1 - mean((pred_ridge - College.test$Apps)^2) / mean((test.avg - College.test$Apps)^2)
+
+# Lasso
+1 - mean((pred_lasso - College.test$Apps)^2) / mean((test.avg - College.test$Apps)^2)
+
+# PCR
+1 - mean((pred_pcr - College.test$Apps)^2) / mean((test.avg - College.test$Apps)^2)
+
+# PLS
+1 - mean((pred_pls - College.test$Apps)^2) / mean((test.avg - College.test$Apps)^2)
+```
+
+By looking at the test R-squared for each of the models, we can see that the only one with a lower accuracy is PCR, which was kind of predicted based on its high (compared to the others) error rate reported above. Overall though, it still predicts pretty well. Among the other 4 models, there is not a very clear favorite.
+

@@ -1,2 +1,206 @@
 # Topic 4 Exercises: Classification
 
+## Márcio Porto
+
+### Programming Assignment
+
+#### 4.7.11
+
+##### a)
+
+```{r}
+library(class)
+library(ISLR)
+library(MASS)
+
+attach(Auto)
+mpg01 = rep(0, length(mpg))
+mpg01[mpg > median(mpg)] = 1
+Auto = data.frame(Auto, mpg01)
+```
+
+##### b)
+
+```{r}
+boxplot(cylinders ~ mpg01, data=Auto, main="Cylinders and mpg01")
+boxplot(displacement ~ mpg01, data=Auto, main="Displacement and mpg01")
+boxplot(horsepower ~ mpg01, data=Auto, main="Horsepower and mpg01")
+boxplot(weight ~ mpg01, data=Auto, main="Weight and mpg01")
+boxplot(acceleration ~ mpg01, data=Auto, main="Acceleration and mpg01")
+boxplot(year ~ mpg01, data=Auto, main="Year and mpg01")
+```
+
+Cylinders, weight, displacement and horsepower might help predict mpg01.
+
+##### c)
+
+```{r}
+train = (year %% 2 == 0)
+Auto.train = Auto[train,]
+Auto.test = Auto[!train,]
+mpg01.test = mpg01[!train]
+```
+
+##### d)
+
+```{r}
+lda = lda(mpg01 ~ cylinders + weight + displacement + horsepower, data=Auto, subset=train)
+summary(lda)
+
+pred = predict(lda, Auto.test)
+
+table(pred$class, mpg01.test)
+mean(pred$class != mpg01.test)
+```
+
+Test error rate = 12.63736%
+
+##### e)
+
+```{r}
+qda = qda(mpg01 ~ cylinders + weight + displacement + horsepower, data=Auto, subset=train)
+summary(qda)
+
+pred_qda = predict(qda, Auto.test)
+table(pred_qda$class, mpg01.test)
+
+mean(pred_qda$class != mpg01.test)
+```
+
+Test error rate = 13.18681%
+
+##### f)
+
+```{r}
+glm = glm(mpg01 ~ cylinders + weight + displacement + horsepower, data=Auto, family=binomial, subset=train)
+summary(glm)
+
+probs = predict(glm, Auto.test, type = "response")
+pred_glm = rep(0, length(probs))
+pred_glm[probs > 0.5] = 1
+table(pred_glm, mpg01.test)
+
+mean(pred_glm != mpg01.test)
+```
+
+Test error rate = 12.08791%
+
+##### g)
+
+```{r}
+train_X = cbind(cylinders, weight, displacement, horsepower)[train,]
+test_X = cbind(cylinders, weight, displacement, horsepower)[!train,]
+train_mpg01 = mpg01[train]
+set.seed(1)
+
+pred_knn = knn(train_X, test_X, train_mpg01, k=1)
+table(pred_knn, mpg01.test)
+mean(pred_knn != mpg01.test)
+
+pred_knn = knn(train_X, test_X, train_mpg01, k=10)
+table(pred_knn, mpg01.test)
+mean(pred_knn != mpg01.test)
+
+pred_knn = knn(train_X, test_X, train_mpg01, k=100)
+table(pred_knn, mpg01.test)
+mean(pred_knn != mpg01.test)
+```
+
+K=1, test error rate = 15.38462%
+K=10, test error rate = 16.48352%
+K=100, test error rate = 14.28571%
+
+#### 4.7.13
+
+```{r}
+attach(Boston)
+
+crim01 = rep(0, length(crim))
+crim01[crim > median(crim)] = 1
+Boston = data.frame(Boston, crim01)
+
+train = 1:(length(crim) / 2)
+test = (length(crim) / 2 + 1):length(crim)
+Boston.train = Boston[train,]
+Boston.test = Boston[test,]
+crim01.test = crim01[test]
+
+# GLM
+glm = glm(crim01 ~ . - crim01 - crim, data=Boston, family=binomial, subset=train)
+probs = predict(glm, Boston.test, type="response")
+pred_glm = rep(0, length(probs))
+pred_glm[probs > 0.5] = 1
+table(pred_glm, crim01.test)
+mean(pred_glm != crim01.test)
+
+# GLM 2
+glm2 = glm(crim01 ~ . - crim01 - crim - chas - nox, data = Boston, family = binomial, subset = train)
+probs = predict(glm2, Boston.test, type="response")
+pred_glm = rep(0, length(probs))
+pred_glm[probs > 0.5] = 1
+table(pred_glm, crim01.test)
+mean(pred_glm != crim01.test)
+
+# LDA
+lda = lda(crim01 ~ . - crim01 - crim, data=Boston, subset=train)
+pred_lda <- predict(lda, Boston.test)
+table(pred_lda$class, crim01.test)
+mean(pred_lda$class != crim01.test)
+
+#KNN
+train_X = cbind(zn, indus, chas, nox, rm, age, dis, rad, tax, ptratio, black, lstat, medv)[train,]
+test_X = cbind(zn, indus, chas, nox, rm, age, dis, rad, tax, ptratio, black, lstat, medv)[test,]
+train_crim01 = crim01[train]
+
+set.seed(1)
+
+pred_knn = knn(train_X, test_X, train_crim01, k=1)
+table(pred_knn, crim01.test)
+mean(pred_knn != crim01.test)
+
+pred_knn = knn(train_X, test_X, train_crim01, k=10)
+table(pred_knn, crim01.test)
+mean(pred_knn != crim01.test)
+
+pred_knn = knn(train_X, test_X, train_crim01, k=100)
+table(pred_knn, crim01.test)
+mean(pred_knn != crim01.test)
+```
+
+GLM test error rate = 18.18182% <br>
+GLM2 test error rate = 15.81028% <br>
+LDA test error rate = 13.43874% <br>
+K=1 KNN test error rate = 45.8498% <br>
+K=10 KNN test error rate = 11.85771% <br>
+K=100 KNN test error rate = 49.01186% <br>
+
+The model with the lowest error rate is a KNN with k=10.
+
+### Theory Assignment
+
+#### 4.7.1
+
+p(X) = (e^(B0 + B1X)) / (1 + e^(B0 + B1X))
+p(X) = (e^(B0 + B1X)) * (1 - p(X))
+p(X) / (1 - p(X)) = e^(B0 + B1X)
+
+#### 4.7.8
+
+It is better to choose logistic regression. The average error rate of 18% hides the fact that the training error rate is 0% for KNN (which in turn make the test error rate 36%). That being the case, the test error rate for KNN is higher than that for logistic regression, so we should choose the latter.
+
+#### 4.7.9
+
+##### a)
+
+```{r}
+px = 0.37 / (1 + 0.37)
+px
+```
+
+##### b)
+
+```{r}
+px = 0.16
+px / (1 - px)
+```
+
