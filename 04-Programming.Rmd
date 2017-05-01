@@ -1,11 +1,45 @@
 # In-Class Programming Activity, Day 4
 
-Your work goes here ...
+## Márcio Porto
 
+## Task 1
 
+```{r}
+```
+
+## Task 2
+
+```{r}
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+
+x1 = 0
+y1 = 100
+lines(x1, y1, col="red")
+
+x2 = c(0:100)
+y2 = c(0:100)
+```
+
+## Task 3
+
+```{r}
+# (x=50,y=60)(x=50,y=60)  and give it a diameter of 40
+x3 = cos(seq(0, 2*pi, 0.05, 40, 40))
+y3 = sin(seq(0, 2*pi, 0.05, 40, 40))
+```
+
+## Task 4
+
+```{r}
+x4 = abs(cos(seq(0, 2*pi, 0.05)))
+x4 = abs(sin(seq(0, 2*pi, 0.05)))
+```
 
 ## Test statements
 
 ```{r}
 scoreActivity::score253(4)
 ```
+
+
+

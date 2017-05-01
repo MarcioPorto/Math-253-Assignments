@@ -1,8 +1,14 @@
 # In-Class Programming Activity, Day 6
 
-Your work goes here ...
+## Márcio Porto
 
+## Task 1
 
+## Task 2
+
+```{r}
+v <- rnorm(10, mean=100, sd=1)
+```
 
 ## Test statements
 

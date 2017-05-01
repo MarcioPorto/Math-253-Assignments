@@ -67,3 +67,6 @@ is_pair <- function() {
 ```{r}
 scoreActivity::score253(9)
 ```
+
+
+

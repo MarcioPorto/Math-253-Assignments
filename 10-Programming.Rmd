@@ -21,7 +21,7 @@ linear_combine <- function(data, coefs) {
   for (nm in names(coefs)) {
     if (nm == "intercept") {
       result <- result + coefs[[nm]]
-    } else if (!data[[nm]]) {
+    } else if (!(is.element(nm, names(data)))) {
       stop()
     } else {
       result <- result + coefs[[nm]] * data[[nm]]
@@ -50,3 +50,4 @@ LL_logistic <- function(data, coefs, outcome) {
 ```{r}
 scoreActivity::score253(10)
 ```
+

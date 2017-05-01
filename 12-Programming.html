@@ -119,66 +119,42 @@ $(document).ready(function () {
 </div>
 
 
-<div id="in-class-programming-activity-day-10" class="section level1">
-<h1>In-Class Programming Activity, Day 10</h1>
+<div id="in-class-programming-activity-day-12" class="section level1">
+<h1>In-Class Programming Activity, Day 12</h1>
 <div id="marcio-porto" class="section level2">
-<h2>Marcio Porto</h2>
+<h2>Márcio Porto</h2>
 </div>
 <div id="task-1" class="section level2">
 <h2>Task 1</h2>
-<pre class="r"><code>library(ISLR)</code></pre>
-<pre class="r"><code>logistic &lt;- function(x) {
-  exp(x) / (1 + exp(x))
-}
-logistic(c(2, 3))</code></pre>
-<pre><code>## [1] 0.8807971 0.9525741</code></pre>
-<pre class="r"><code>linear_combine &lt;- function(data, coefs) {
-  result &lt;- 0
-  for (nm in names(coefs)) {
-    if (nm == &quot;intercept&quot;) {
-      result &lt;- result + coefs[[nm]]
-    } else if (!(is.element(nm, names(data)))) {
-      stop()
-    } else {
-      result &lt;- result + coefs[[nm]] * data[[nm]]
-    }
-  }
-}
-linear_combine(data = Default, coefs = c(intercept = 3, balance = 0.00001, income = -0.0002))</code></pre>
-<pre class="r"><code>LL_logistic &lt;- function(data, coefs, outcome) {
-  r &lt;- linear_combine(data, coefs)
-  p &lt;- logistic(r)
-  if (outcome == FALSE) {
-    p &lt;- 1 - p
-  }
-}
-#LL_logistic(data=Default, 
-#            coefs = c(intercept = 1, income = -0.0001), 
-#            outcome = Default$default == &quot;Yes&quot;)
-# Should output [1] -2425.733</code></pre>
+<pre class="r"><code>n_cases = 100
+red_mean = c(1, 0)
+green_mean = c(0, -1)
+blue_mean = c(-1, 1)
+
+covar_red = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2)
+covar_blue = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2) </code></pre>
+</div>
+<div id="task-2" class="section level2">
+<h2>Task 2</h2>
 </div>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
-<pre class="r"><code>scoreActivity::score253(10)</code></pre>
+<pre class="r"><code>scoreActivity::score253(12)</code></pre>
 <pre><code>## --------
-## Running test statements for day  10</code></pre>
+## Running test statements for day  12</code></pre>
 <pre><code>## Loading required package: lazyeval</code></pre>
 <pre><code>## Warning in results[k] &lt;- paste(&quot;ERROR when running &quot;, deparse(ldots[k][[1]]
-## $expr)): number of items to replace is not a multiple of replacement length
-
-## Warning in results[k] &lt;- paste(&quot;ERROR when running &quot;, deparse(ldots[k][[1]]
 ## $expr)): number of items to replace is not a multiple of replacement length</code></pre>
-<pre><code>## passed: object &quot;Default&quot; exists
-## passed: object &quot;logistic&quot; exists
-## passed: logistic(0)
-## passed: logistic(2)
-## ERROR when running  check(about(88724.25), linear_combine(data = Default, coef = c(intercept = 1, 
-## passed: gives_error(linear_combine(data = Default, coef = c(intercept = 1, 
-##     whoopee = 2)))
-## passed: is.function(LL_logistic)
-## ERROR when running  check(about(-2425.7), LL_logistic(data = Default, coefs = c(intercept = 1, 
-## FAILED: object &quot;best_coefs&quot; doesn't exist.
-## ERROR when running  check(TRUE, &quot;par&quot; %in% names(best_coefs))</code></pre>
+<pre><code>## FAILED: object &quot;Red&quot; doesn't exist.
+## FAILED: object &quot;Green&quot; doesn't exist.
+## FAILED: object &quot;Blue&quot; doesn't exist.
+## ERROR when running  check(TRUE, all(names(Red) %in% c(&quot;x&quot;, &quot;y&quot;, &quot;class&quot;)))
+## ERROR when running  check(TRUE, all(abs(apply(Red[, c(1, 2)], FUN = mean, MARGIN = 2) - 
+## ERROR when running  check(TRUE, all(table(Same_sigma$class) == c(n_cases, n_cases)))
+## FAILED: object &quot;mod_LDA_one&quot; doesn't exist.
+## FAILED: object &quot;mod_QDA_two&quot; doesn't exist.
+## FAILED: object &quot;test_QDA_one&quot; doesn't exist.
+## FAILED: object &quot;test_LDA_two&quot; doesn't exist.</code></pre>
 </div>
 </div>
 
