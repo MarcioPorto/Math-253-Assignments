@@ -5,34 +5,50 @@
 ## Task 1
 
 ```{r}
+library(ISLR)
 ```
 
 ## Task 2
 
 ```{r}
-plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+plot(1, xlim=c(0, 100), ylim=c(0,100), type="n")
 
-x1 = 0
-y1 = 100
-lines(x1, y1, col="red")
+x1 = c(60, 20)
+y1 = c(20, 60)
+x2 = c(20, 20)
+y2 = c(60, 60)
 
-x2 = c(0:100)
-y2 = c(0:100)
+lines(x1, x2)
+lines(y1, y2)
+lines(y2, x1)
+lines(x2, x1)
 ```
 
 ## Task 3
 
 ```{r}
-# (x=50,y=60)(x=50,y=60)  and give it a diameter of 40
-x3 = cos(seq(0, 2*pi, 0.05, 40, 40))
-y3 = sin(seq(0, 2*pi, 0.05, 40, 40))
+angles = seq(0,2*pi, by=0.001)
+
+x3 = 20*cos(angles) + 50
+y3 = 20*sin(angles) + 60
 ```
 
 ## Task 4
 
 ```{r}
-x4 = abs(cos(seq(0, 2*pi, 0.05)))
-x4 = abs(sin(seq(0, 2*pi, 0.05)))
+angles = seq(0, 2*pi, by=0.001)
+x4 = 20 * abs(sin(angles)) * round(cos(angles), digits=6)
+y4 = 20 * abs(sin(angles)) * round(sin(angles), digits=6)
+
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+polygon(x4 + 50, y4 + 60)
+```
+
+## Task 5
+
+```{r}
+plot(1, xlim=c(0, 100), ylim=c(0,100), type="n", ylab="Y", xlab="X", xaxt ="n")
+points(c(50, 30, 70), c(60, 60, 60), col=col2rgb('wheat', alpha = .1), pch=4)
 ```
 
 ## Test statements
