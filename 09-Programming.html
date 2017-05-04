@@ -123,62 +123,94 @@ $(document).ready(function () {
 <h1>In-Class Programming Activity, Day 9</h1>
 <div id="marcio-porto" class="section level2">
 <h2>Marcio Porto</h2>
-<pre class="r"><code>poker_deck &lt;- c(outer((10 * 2:14), 1:4, '+'))
+<pre class="r"><code>poker_deck = c(outer((10 * 2:14), 1:4, '+')) 
 
-suits &lt;- function(card) {
-  card %/% 10
-  #suit &lt;- card %/% 10
-  #if (suit == 1){
-  #  'clubs'
-  #} else if (suit == 2){
-  #  'diamonds'
-  #} else if (suit == 3) {
-  #  'hearts'
-  #} else if (suit == 4) {
-  #  'spades'
-  #}
+suits = function(x) {
+  x %% 10
 }
 
-ranks &lt;- function(card) {
-  card %% 10
+ranks = function(x) {
+  x %/% 10
 }
 
-# Kinds of hand
-is_royal_flush &lt;- function() {
-  # five cards of the same suit with ranks 10, ack, queen, king, ace. This could also be called a royal straight flush, but a royal flush is by necessity a straight flush.
+is_royal_flush = function(hand) {
+  all(ranks(hand) == 13:9) &amp;&amp; all(diff(suits(hand)) == 0)
 }
 
-is_straight_flush &lt;- function() {
-  # five cards of the same suit in consecutive order
+is_straight_flush = function(hand){
+    all(diff(sort(ranks(hand))) == 1) &amp;&amp; all(ranks(hand) != 13:9) &amp;&amp; all(diff(suits(hand))== 0) 
 }
 
-is_four_of_a_kind &lt;- function() {
-  # four cards of the same value (and, necessarily, different suits)
+is_four_of_a_kind = function(hand){
+  rank_freq=table(ranks(hand))
+  return(max(rank_freq)==4)
 }
 
-is_full_house &lt;- function() {
-  # Three of a kind and the other two cards forming a pair
+is_full_house = function(hand) {
+  rank_freq =table(ranks(hand))
+  return( (max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 2))
 }
 
-is_flush &lt;- function() {
-  # five cards of the same suit
+is_flush = function(hand) {
+  suit_freq = table(suits(hand))
+  return(max(suit_freq) == 5)
 }
 
-is_straight &lt;- function() {
-  # five consecutively numbered cards 
+is_straight = function(hand) {
+   all(diff(sort(ranks(hand))) == 1)
 }
 
-is_three_of_a_kind &lt;- function() {
-  
+is_three_of_a_kind = function(hand) {
+  rank_freq = table(ranks(hand))
+  return ((max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 1))
 }
 
-is_two_pair &lt;- function() {
-  
+is_two_pair = function(hand) {
+  hand_rank=sort(ranks(hand))
+  rank_freq =  table(hand_rank)
+  return (length(rank_freq[rank_freq==2]) == 2)
 }
 
-is_pair &lt;- function() {
-  
-}</code></pre>
+
+is_pair = function(hand) {
+  hand_rank = sort(ranks(hand))
+  rank_freq = table(hand_rank)
+  return(length(rank_freq[rank_freq==2]) == 1)
+}
+
+before_draw = function(x) {
+  five_cards = sample(poker_deck, 5)
+  if (is_royal_flush(five_cards)) {  
+    return(&quot;Full house&quot;)
+  } else if (is_straight_flush(five_cards)) {
+    return(&quot;Straight flush&quot;)
+  } else if (is_full_house(five_cards)) {
+    return(&quot;Full house&quot;)
+  } else if (is_straight(five_cards)) {
+    return(&quot;Straight&quot;)
+  } else if (is_flush(five_cards)) {
+    return(&quot;Flush&quot;)
+  } else if (is_four_of_a_kind(five_cards)) {
+    return(&quot;Four of a kind&quot;)
+  } else if (is_three_of_a_kind(five_cards)) {
+    return(&quot;Three of a kind&quot;)
+  } else if (is_two_pair(five_cards)) {
+    return(&quot;Two pairs&quot;)
+  } else if (is_pair(five_cards)) {
+    return(&quot;One pair&quot;)
+  } else {
+    return(&quot;Nothing!&quot;)
+  }
+}
+
+table(sapply(1:10000, FUN=before_draw))</code></pre>
+<pre><code>## 
+##           Flush  Four of a kind      Full house        Nothing! 
+##              17               3              14            5038 
+##        One pair        Straight  Straight flush Three of a kind 
+##            4204              37               1             202 
+##       Two pairs 
+##             484</code></pre>
 </div>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
@@ -189,14 +221,14 @@ is_pair &lt;- function() {
 <pre><code>## Loading required package: lazyeval</code></pre>
 <pre><code>## passed: is.function(ranks)
 ## passed: is.function(suits)
-## ERROR when running  check(TRUE, is_pair(c(21, 22, 33, 41, 52)))
-## ERROR when running  check(FALSE, is_pair(c(21, 31, 41, 51, 62)))
-## ERROR when running  check(TRUE, is_flush(c(21, 31, 41, 51, 71)))
-## ERROR when running  check(TRUE, is_full_house(c(21, 22, 31, 32, 33)))
-## ERROR when running  check(FALSE, is_full_house(c(21, 22, 31, 32, 42)))
-## ERROR when running  check(TRUE, is_straight(c(21, 31, 42, 52, 62)))
-## ERROR when running  check(FALSE, is_straight_flush(c(21, 31, 42, 52, 62)))
-## ERROR when running  check(TRUE, is_straight_flush(c(21, 31, 41, 51, 61)))</code></pre>
+## passed: is_pair(c(21, 22, 33, 41, 52))
+## passed: is_pair(c(21, 31, 41, 51, 62))
+## passed: is_flush(c(21, 31, 41, 51, 71))
+## passed: is_full_house(c(21, 22, 31, 32, 33))
+## passed: is_full_house(c(21, 22, 31, 32, 42))
+## passed: is_straight(c(21, 31, 42, 52, 62))
+## passed: is_straight_flush(c(21, 31, 42, 52, 62))
+## passed: is_straight_flush(c(21, 31, 41, 51, 61))</code></pre>
 </div>
 </div>
 

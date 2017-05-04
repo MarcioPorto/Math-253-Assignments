@@ -3,62 +3,86 @@
 ## Marcio Porto
 
 ```{r}
-poker_deck <- c(outer((10 * 2:14), 1:4, '+'))
+poker_deck = c(outer((10 * 2:14), 1:4, '+')) 
 
-suits <- function(card) {
-  card %/% 10
-  #suit <- card %/% 10
-  #if (suit == 1){
-  #  'clubs'
-  #} else if (suit == 2){
-  #  'diamonds'
-  #} else if (suit == 3) {
-  #  'hearts'
-  #} else if (suit == 4) {
-  #  'spades'
-  #}
+suits = function(x) {
+  x %% 10
 }
 
-ranks <- function(card) {
-  card %% 10
+ranks = function(x) {
+  x %/% 10
 }
 
-# Kinds of hand
-is_royal_flush <- function() {
-  # five cards of the same suit with ranks 10, ack, queen, king, ace. This could also be called a royal straight flush, but a royal flush is by necessity a straight flush.
+is_royal_flush = function(hand) {
+  all(ranks(hand) == 13:9) && all(diff(suits(hand)) == 0)
 }
 
-is_straight_flush <- function() {
-  # five cards of the same suit in consecutive order
+is_straight_flush = function(hand) {
+    all(diff(sort(ranks(hand))) == 1) && all(ranks(hand) != 13:9) && all(diff(suits(hand))== 0) 
 }
 
-is_four_of_a_kind <- function() {
-  # four cards of the same value (and, necessarily, different suits)
+is_four_of_a_kind = function(hand) {
+  rank_freq = table(ranks(hand))
+  return(max(rank_freq) == 4)
 }
 
-is_full_house <- function() {
-  # Three of a kind and the other two cards forming a pair
+is_full_house = function(hand) {
+  rank_freq = table(ranks(hand))
+  return((max(rank_freq) == 3) && (min(rank_freq) == 2))
 }
 
-is_flush <- function() {
-  # five cards of the same suit
+is_flush = function(hand) {
+  suit_freq = table(suits(hand))
+  return(max(suit_freq) == 5)
 }
 
-is_straight <- function() {
-  # five consecutively numbered cards 
+is_straight = function(hand) {
+   all(diff(sort(ranks(hand))) == 1)
 }
 
-is_three_of_a_kind <- function() {
-  
+is_three_of_a_kind = function(hand) {
+  rank_freq = table(ranks(hand))
+  return((max(rank_freq) == 3) && (min(rank_freq) == 1))
 }
 
-is_two_pair <- function() {
-  
+is_two_pair = function(hand) {
+  hand_rank = sort(ranks(hand))
+  rank_freq = table(hand_rank)
+  return(length(rank_freq[rank_freq == 2]) == 2)
 }
 
-is_pair <- function() {
-  
+is_pair = function(hand) {
+  hand_rank = sort(ranks(hand))
+  rank_freq = table(hand_rank)
+  return(length(rank_freq[rank_freq == 2]) == 1)
 }
+
+before_draw = function(x) {
+  five_cards = sample(poker_deck, 5)
+  if (is_royal_flush(five_cards)) {  
+    return("You have a: Royal flush")
+  } else if (is_straight_flush(five_cards)) {
+    return("You have a: Straight flush")
+  } else if (is_full_house(five_cards)) {
+    return("You have a: Full house")
+  } else if (is_straight(five_cards)) {
+    return("You have a: Straight")
+  } else if (is_flush(five_cards)) {
+    return("You have a: Flush")
+  } else if (is_four_of_a_kind(five_cards)) {
+    return("You have a: Four of a kind")
+  } else if (is_three_of_a_kind(five_cards)) {
+    return("You have a: Three of a kind")
+  } else if (is_two_pair(five_cards)) {
+    return("You have a: Two pairs")
+  } else if (is_pair(five_cards)) {
+    return("You have a: One pair")
+  } else {
+    return("Nothing!")
+  }
+}
+
+table(sapply(1:10000, FUN=before_draw))
 ```
 
 
@@ -67,6 +91,3 @@ is_pair <- function() {
 ```{r}
 scoreActivity::score253(9)
 ```
-
-
-
