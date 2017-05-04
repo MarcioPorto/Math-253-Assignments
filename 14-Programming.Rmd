@@ -1,8 +1,48 @@
 # In-Class Programming Activity, Day 14
 
-Your work goes here ...
+## Márcio Porto
 
+## Comparing OLS to ridge
 
+```{r}
+library(glmnet)
+
+GenCont = read.csv("http://tiny.cc/dcf/GenCont.csv")
+
+compare_ols_ridge = function(responses, predictors, lambda=1) {
+  n = length(responses)
+  index = sample(1:length(responses), floor(n/2))
+  
+  training_responses = responses[index]
+  training_predictors = predictors[index,]
+  testing_responses = responses[-index]
+  testing_predictors = predictors[-index,]
+  
+  lm = lm(training_responses ~ as.matrix(training_predictors))
+  lm_pred = predict(lm, new_data=testing_predictors)
+  lm_mse = mean((lm_pred - testing_responses) ^ 2)
+  
+  glm = glmnet(as.matrix(training_predictors), training_responses, nlambda=lambda, alpha=0)
+  glm_pred = predict(glm, newx=as.matrix(testing_predictors))
+  glm_mse = mean((glm_pred - testing_responses) ^ 2)
+  
+  i = sample(1:floor(n/2), replace=TRUE)
+  testing_responses_2 = testing_responses[i]
+  testing_predictors_2 = testing_predictors[i,]
+  
+  lm_predict_out = predict(lm, new_data=testing_predictors_2)
+  lm_mse_out = mean((lm_predict_out-testing_responses_2) ^ 2)
+  
+  glm_predict_out = predict(glm, newx=as.matrix(testing_predictors_2))
+  glm_mse_out = mean((glm_predict_out-testing_responses_2) ^ 2)
+  
+  return(list(lambda=lambda, ols_in=lm_mse, ridge_in=glm_mse, ols_out=lm_mse_out,  ridge_out=glm_mse_out))
+}
+
+Shrink_results = compare_ols_ridge(GenCont$Phenotypes, GenCont[,-1], lambda=1)
+```
+
+## Exploring Lambda
 
 ## Test statements
 
