@@ -4,11 +4,39 @@
 
 ## Task 1
 
+```{r}
+myHistogram = function(var, fill="blue") {
+  make_one_bar = function(point) {
+    xLeft = point$xL
+    xRight = point$xR
+    height = point$count
+    res = data.frame(
+      x = c(xLeft, xLeft, xRight, xRight, NA),
+      y = c(0, height, height, 0, NA)
+    )
+    res
+  }
+
+  one_to_five = function(hist_data) {
+    bars = NULL
+    for (k in 1:nrow(hist_data)) {
+      new_bar = make_one_bar(hist_data[k,])
+      bars = rbind(bars, new_bar)
+    }
+    bars
+  }
+
+  My_bars = one_to_five(var)
+  plot(My_bars,  type="n")
+  lines(My_bars)
+  polygon(My_bars, col=fill)
+  curve(dnorm(x, mean=mean(var), sd=sd(hist_basics)))
+}
+```
+
 ## Task 2
 
-```{r}
-v <- rnorm(10, mean=100, sd=1)
-```
+## Task 3
 
 ## Test statements
 
