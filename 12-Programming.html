@@ -126,16 +126,58 @@ $(document).ready(function () {
 </div>
 <div id="task-1" class="section level2">
 <h2>Task 1</h2>
-<pre class="r"><code>n_cases = 100
+<pre class="r"><code>library(MASS)
+
+n_cases = 100
+
 red_mean = c(1, 0)
 green_mean = c(0, -1)
 blue_mean = c(-1, 1)
 
-covar_red = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2)
-covar_blue = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2) </code></pre>
+covar_red = cbind(c(3, -1.7), c(-1.7, 1))
+covar_blue = cbind(c(2, 1.5), c(1.5, 3))
+
+One = cbind(rnorm(n_cases), rnorm(n_cases))
+Two = cbind(rnorm(n_cases), rnorm(n_cases))
+Three = cbind(rnorm(n_cases), rnorm(n_cases))
+
+Red = One %*% chol(covar_red)
+Red = Red + matrix(red_mean, nrow=length(Red[,1]), ncol=2)
+Red = data.frame(x=Red[,1], y=Red[,2], class='Red', stringsAsFactors=FALSE)
+
+Green = Two %*% (chol(covar_red))
+Green = Green + matrix(green_mean, nrow=length(Green[,1]), ncol=2)
+Green = data.frame(x=Green[,1], y=Green[,2], class='Green', stringsAsFactors=FALSE)
+
+Blue = Three %*% chol(covar_blue)
+Blue = Blue + matrix(blue_mean, nrow=length(Blue[,1]), ncol=2)
+Blue = data.frame(x=Blue[,1], y=Blue[,2], class='Blue', stringsAsFactors=FALSE)
+
+Same_sigma = rbind(Red, Green)
+Different_sigma = rbind(Red, Blue)</code></pre>
 </div>
 <div id="task-2" class="section level2">
 <h2>Task 2</h2>
+<pre class="r"><code>mod_LDA_one = lda(class ~ x + y, data=Same_sigma)
+mod_QDA_one = qda(class ~ x + y, data=Same_sigma)
+
+test_LDA_one = predict(mod_LDA_one, newdata=Same_sigma)
+test_QDA_one = predict(mod_QDA_one, newdata=Same_sigma)</code></pre>
+</div>
+<div id="task-3" class="section level2">
+<h2>Task 3</h2>
+<pre class="r"><code>table(Same_sigma$class, test_LDA_one$class)</code></pre>
+<pre><code>##        
+##         Green Red
+##   Green    75  25
+##   Red      26  74</code></pre>
+<pre class="r"><code>table(Same_sigma$class, test_QDA_one$class)</code></pre>
+<pre><code>##        
+##         Green Red
+##   Green    74  26
+##   Red      26  74</code></pre>
+<pre class="r"><code>mod_QDA_two = NULL
+test_LDA_two = NULL</code></pre>
 </div>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
@@ -143,18 +185,17 @@ covar_blue = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2) </code></pre>
 <pre><code>## --------
 ## Running test statements for day  12</code></pre>
 <pre><code>## Loading required package: lazyeval</code></pre>
-<pre><code>## Warning in results[k] &lt;- paste(&quot;ERROR when running &quot;, deparse(ldots[k][[1]]
-## $expr)): number of items to replace is not a multiple of replacement length</code></pre>
-<pre><code>## FAILED: object &quot;Red&quot; doesn't exist.
-## FAILED: object &quot;Green&quot; doesn't exist.
-## FAILED: object &quot;Blue&quot; doesn't exist.
-## ERROR when running  check(TRUE, all(names(Red) %in% c(&quot;x&quot;, &quot;y&quot;, &quot;class&quot;)))
-## ERROR when running  check(TRUE, all(abs(apply(Red[, c(1, 2)], FUN = mean, MARGIN = 2) - 
-## ERROR when running  check(TRUE, all(table(Same_sigma$class) == c(n_cases, n_cases)))
-## FAILED: object &quot;mod_LDA_one&quot; doesn't exist.
-## FAILED: object &quot;mod_QDA_two&quot; doesn't exist.
-## FAILED: object &quot;test_QDA_one&quot; doesn't exist.
-## FAILED: object &quot;test_LDA_two&quot; doesn't exist.</code></pre>
+<pre><code>## passed: object &quot;Red&quot; exists
+## passed: object &quot;Green&quot; exists
+## passed: object &quot;Blue&quot; exists
+## passed: all(names(Red) %in% c(&quot;x&quot;, &quot;y&quot;, &quot;class&quot;))
+## FAILED: all(abs(apply(Red[, c(1, 2)], FUN = mean, MARGIN = 2) - red_mean) &lt; 
+##     0.5)
+## passed: all(table(Same_sigma$class) == c(n_cases, n_cases))
+## passed: object &quot;mod_LDA_one&quot; exists
+## passed: object &quot;mod_QDA_two&quot; exists
+## passed: object &quot;test_QDA_one&quot; exists
+## passed: object &quot;test_LDA_two&quot; exists</code></pre>
 </div>
 </div>
 

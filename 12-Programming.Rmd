@@ -5,18 +5,58 @@
 ## Task 1
 
 ```{r}
+library(MASS)
+
 n_cases = 100
+
 red_mean = c(1, 0)
 green_mean = c(0, -1)
 blue_mean = c(-1, 1)
 
-covar_red = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2)
-covar_blue = matrix(c(1.0, -0.7, -0.7, 1.0), nrow=2, ncol=2) 
+covar_red = cbind(c(3, -1.7), c(-1.7, 1))
+covar_blue = cbind(c(2, 1.5), c(1.5, 3))
+
+One = cbind(rnorm(n_cases), rnorm(n_cases))
+Two = cbind(rnorm(n_cases), rnorm(n_cases))
+Three = cbind(rnorm(n_cases), rnorm(n_cases))
+
+Red = One %*% chol(covar_red)
+Red = Red + matrix(red_mean, nrow=length(Red[,1]), ncol=2)
+Red = data.frame(x=Red[,1], y=Red[,2], class='Red', stringsAsFactors=FALSE)
+
+Green = Two %*% (chol(covar_red))
+Green = Green + matrix(green_mean, nrow=length(Green[,1]), ncol=2)
+Green = data.frame(x=Green[,1], y=Green[,2], class='Green', stringsAsFactors=FALSE)
+
+Blue = Three %*% chol(covar_blue)
+Blue = Blue + matrix(blue_mean, nrow=length(Blue[,1]), ncol=2)
+Blue = data.frame(x=Blue[,1], y=Blue[,2], class='Blue', stringsAsFactors=FALSE)
+
+Same_sigma = rbind(Red, Green)
+Different_sigma = rbind(Red, Blue)
 ```
 
 ## Task 2
 
+```{r}
+mod_LDA_one = lda(class ~ x + y, data=Same_sigma)
+mod_QDA_one = qda(class ~ x + y, data=Same_sigma)
 
+test_LDA_one = predict(mod_LDA_one, newdata=Same_sigma)
+test_QDA_one = predict(mod_QDA_one, newdata=Same_sigma)
+```
+
+## Task 3
+
+```{r}
+table(Same_sigma$class, test_LDA_one$class)
+table(Same_sigma$class, test_QDA_one$class)
+```
+
+```{r}
+mod_QDA_two = NULL
+test_LDA_two = NULL
+```
 
 ## Test statements
 
