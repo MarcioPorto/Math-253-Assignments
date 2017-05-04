@@ -137,18 +137,18 @@ is_royal_flush = function(hand) {
   all(ranks(hand) == 13:9) &amp;&amp; all(diff(suits(hand)) == 0)
 }
 
-is_straight_flush = function(hand){
+is_straight_flush = function(hand) {
     all(diff(sort(ranks(hand))) == 1) &amp;&amp; all(ranks(hand) != 13:9) &amp;&amp; all(diff(suits(hand))== 0) 
 }
 
-is_four_of_a_kind = function(hand){
-  rank_freq=table(ranks(hand))
-  return(max(rank_freq)==4)
+is_four_of_a_kind = function(hand) {
+  rank_freq = table(ranks(hand))
+  return(max(rank_freq) == 4)
 }
 
 is_full_house = function(hand) {
-  rank_freq =table(ranks(hand))
-  return( (max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 2))
+  rank_freq = table(ranks(hand))
+  return((max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 2))
 }
 
 is_flush = function(hand) {
@@ -162,42 +162,41 @@ is_straight = function(hand) {
 
 is_three_of_a_kind = function(hand) {
   rank_freq = table(ranks(hand))
-  return ((max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 1))
+  return((max(rank_freq) == 3) &amp;&amp; (min(rank_freq) == 1))
 }
 
 is_two_pair = function(hand) {
-  hand_rank=sort(ranks(hand))
-  rank_freq =  table(hand_rank)
-  return (length(rank_freq[rank_freq==2]) == 2)
+  hand_rank = sort(ranks(hand))
+  rank_freq = table(hand_rank)
+  return(length(rank_freq[rank_freq == 2]) == 2)
 }
-
 
 is_pair = function(hand) {
   hand_rank = sort(ranks(hand))
   rank_freq = table(hand_rank)
-  return(length(rank_freq[rank_freq==2]) == 1)
+  return(length(rank_freq[rank_freq == 2]) == 1)
 }
 
 before_draw = function(x) {
   five_cards = sample(poker_deck, 5)
   if (is_royal_flush(five_cards)) {  
-    return(&quot;Full house&quot;)
+    return(&quot;You have a: Royal flush&quot;)
   } else if (is_straight_flush(five_cards)) {
-    return(&quot;Straight flush&quot;)
+    return(&quot;You have a: Straight flush&quot;)
   } else if (is_full_house(five_cards)) {
-    return(&quot;Full house&quot;)
+    return(&quot;You have a: Full house&quot;)
   } else if (is_straight(five_cards)) {
-    return(&quot;Straight&quot;)
+    return(&quot;You have a: Straight&quot;)
   } else if (is_flush(five_cards)) {
-    return(&quot;Flush&quot;)
+    return(&quot;You have a: Flush&quot;)
   } else if (is_four_of_a_kind(five_cards)) {
-    return(&quot;Four of a kind&quot;)
+    return(&quot;You have a: Four of a kind&quot;)
   } else if (is_three_of_a_kind(five_cards)) {
-    return(&quot;Three of a kind&quot;)
+    return(&quot;You have a: Three of a kind&quot;)
   } else if (is_two_pair(five_cards)) {
-    return(&quot;Two pairs&quot;)
+    return(&quot;You have a: Two pairs&quot;)
   } else if (is_pair(five_cards)) {
-    return(&quot;One pair&quot;)
+    return(&quot;You have a: One pair&quot;)
   } else {
     return(&quot;Nothing!&quot;)
   }
@@ -205,12 +204,14 @@ before_draw = function(x) {
 
 table(sapply(1:10000, FUN=before_draw))</code></pre>
 <pre><code>## 
-##           Flush  Four of a kind      Full house        Nothing! 
-##              17               3              14            5038 
-##        One pair        Straight  Straight flush Three of a kind 
-##            4204              37               1             202 
-##       Two pairs 
-##             484</code></pre>
+##                    Nothing!           You have a: Flush 
+##                        4959                          21 
+##  You have a: Four of a kind      You have a: Full house 
+##                           3                          18 
+##        You have a: One pair        You have a: Straight 
+##                        4353                          37 
+## You have a: Three of a kind       You have a: Two pairs 
+##                         181                         428</code></pre>
 </div>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>

@@ -6,43 +6,60 @@
 
 ```{r}
 library(ISLR)
-```
 
-```{r}
-logistic <- function(x) {
+logistic = function(x) {
   exp(x) / (1 + exp(x))
 }
 logistic(c(2, 3))
 ```
 
-```{r}
-linear_combine <- function(data, coefs) {
-  result <- 0
-  for (nm in names(coefs)) {
-    if (nm == "intercept") {
-      result <- result + coefs[[nm]]
-    } else if (!(is.element(nm, names(data)))) {
-      stop()
-    } else {
-      result <- result + coefs[[nm]] * data[[nm]]
-    }
-  }
-}
-linear_combine(data = Default, coefs = c(intercept = 3, balance = 0.00001, income = -0.0002))
-```
+## Task 2
 
 ```{r}
-LL_logistic <- function(data, coefs, outcome) {
-  r <- linear_combine(data, coefs)
-  p <- logistic(r)
-  if (outcome == FALSE) {
-    p <- 1 - p
+linear_combine = function(data, coefs) {
+  result = 0
+  for (nm in names(coefs)) {
+    if (nm == "intercept") {
+      result = result + coefs[[nm]]
+    } else {
+      stopifnot(nm %in% names(data))
+      result = result + coefs[[nm]] * data[[nm]]
+    }
   }
+  return(result)
 }
-#LL_logistic(data=Default, 
-#            coefs = c(intercept = 1, income = -0.0001), 
-#            outcome = Default$default == "Yes")
-# Should output [1] -2425.733
+linear_combine(data=Default, coefs=c(intercept=3, balance=0.00001, income=-0.0002))
+```
+
+## Task 3
+
+```{r}
+LL_logistic = function(data, coefs, outcome) {
+  combination = linear_combine(data, coefs)
+  probability = logistic(combination)
+  stopifnot(length(outcome) == length(probability))
+  likelihood = rep(NA, length(outcome))
+  for(i in 1:length(probability)){
+    if(outcome[i]) {
+      likelihood[i] = probability[i]
+    } else {
+      likelihood[i] = 1-probability[i]
+    }
+  }
+  return(sum(log(likelihood)))
+}
+LL_logistic(data=Default, coefs=c(intercept=1, income=-0.0001), outcome=Default$default == "Yes")
+```
+
+## Task 4
+
+```{r}
+LL_logistic2 = function(coefs) {
+  LL_logistic(data=Default, coefs, outcome=Default$default == "Yes")
+}
+coefs = c(intercept=1, income=-0.0001)
+best_coefs = optim(coefs, LL_logistic2, control=list(fnscale = -1))
+glm(default=="Yes" ~ income, data=Default, family="binomial")
 ```
 
 ## Test statements
