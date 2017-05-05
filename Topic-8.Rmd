@@ -1,2 +1,118 @@
 # Topic 8 Exercises: Tree-based models
 
+## Márcio Porto
+
+## Programming
+
+### 8.4.12
+
+```{r}
+set.seed(1)
+library(ISLR)
+data(Weekly)
+
+train = sample(nrow(Weekly), nrow(Weekly) / 2)
+# Convert qualitative to quantitative
+Weekly$Direction = ifelse(Weekly$Direction == "Up", 1, 0)
+
+Weekly.train = Weekly[train,]
+Weekly.test = Weekly[-train,]
+
+# Logistic regression
+logit = glm(Direction ~ . - Year - Today, data = Weekly.train, family = "binomial")
+logit_probs = predict(logit, newdata=Weekly.test, type="response")
+logit_pred = ifelse(logit_probs > 0.5, 1, 0)
+table(Weekly.test$Direction, logit_pred)
+
+# Boosting
+library(gbm)
+boost = gbm(Direction ~ . - Year - Today, data=Weekly.train, distribution="bernoulli", n.trees=5000)
+boost_probs = predict(boost, newdata=Weekly.test, n.trees=5000)
+boost_pred = ifelse(boost_probs > 0.5, 1, 0)
+table(Weekly.test$Direction, boost_pred)
+
+# Bagging
+library(randomForest)
+bag.fit <- randomForest(Direction ~ . - Year - Today, data = Weekly.train, mtry = 6)
+bag.probs <- predict(bag.fit, newdata = Weekly.test)
+bag.pred <- ifelse(bag.probs > 0.5, 1, 0)
+table(Weekly.test$Direction, bag.pred)
+
+# Random forests
+rf.fit <- randomForest(Direction ~ . - Year - Today, data = Weekly.train, mtry = 2)
+rf.probs <- predict(rf.fit, newdata = Weekly.test)
+rf.pred <- ifelse(rf.probs > 0.5, 1, 0)
+table(Weekly.test$Direction, rf.pred)
+```
+
+LR classification error = 0.4623853
+Boosting classification error = 0.4954128
+Bagging classification error = 0.7137615
+Random forests classification error = 0.4550459
+
+Random forests is the best model for this data since it give the lowest classification error. Linear regression was not too far behind.
+
+## Theory
+
+### 8.4.1
+
+```{r}
+
+```
+
+### 8.4.2
+
+In this case, each term involves only a single variable, which is exactly what an additive model does. In an additive model, each new step adds more split to the tree, which is the same for boosting when d=1.
+
+### 8.4.3
+
+```{r}
+p = seq(0, 1, 0.01)
+gini = 2 * p * (1 - p)
+classification_error = 1 - pmax(p, 1 - p)
+cross_entropy = - (p * log(p) + (1 - p) * log(1 - p))
+
+plot(p, classification_error, type = "l", ylim = c(0, 0.75))
+lines(p, gini, col = "blue")
+lines(p, cross_entropy, col = "green")
+```
+
+### 8.4.4
+
+#### a)
+
+If X1 >= 1 then 5. <br>
+Else if X2 >= 1 then 15. <br>
+Else if X1 < 0 then 3. <br>
+Else if X2 < 0 then 10. <br>
+Else 0.
+
+#### b)
+
+```{r}
+par(xpd=NA)
+
+plot(NA, NA, type="n", xlim=c(-2, 2), ylim=c(-3, 3), xlab="X1", ylab="X2")
+
+lines(x=c(-2, 2), y=c(1, 1))
+
+lines(x=c(1, 1), y=c(-3, 1))
+text(x=(-2 + 1)/2, y=-1, labels=c(-1.8))
+text(x=1.5, y=-1, labels=c(0.63))
+
+lines(x=c(-2, 2), y=c(2, 2))
+text(x=0, y=2.5, labels=c(2.49))
+
+lines(x=c(0, 0), y=c(1, 2))
+text(x=-1, y=1.5, labels=c(-1.06))
+text(x=1, y=1.5, labels=c(0.21))
+```
+
+### 8.4.5
+
+Majority vote: X = red, since most of the observations are red. <br>
+Average probability: X = green, because the average of all observations is 0.45.
+
+
+
+
