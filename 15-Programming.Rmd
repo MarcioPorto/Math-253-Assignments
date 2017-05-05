@@ -1,8 +1,76 @@
 # In-Class Programming Activity, Day 15
 
-Your work goes here ...
+## Márcio Porto
 
+## Overview
 
+```{r}
+library(glmnet)
+library(pls)
+load('mona.rda')
+
+X = t(mona) - mean(mona[])
+X_rand = matrix(rnorm(length(X), mean=0, sd=1), ncol=ncol(X), nrow=nrow(X))
+X_corr = X_rand %*% chol(var(X))
+```
+
+## Sparse beta
+
+```{r}
+beta = rep(0, 191)
+n = sample(1:191, 175)
+
+# Replacing values in beta
+beta[-n] = sample(c(2, 5, -3,-4), 16, replace=TRUE)
+```
+
+## The output
+
+```{r}
+Y_pure = X %*% beta
+
+var_Y_real = 0.1 * var(Y_pure)
+X_rand1 = matrix(rnorm(length(X), mean=0, sd=sqrt(var_Y_real)), ncol=ncol(X), nrow=nrow(X))
+
+Y_real = (X + X_rand1 %*% chol(var(X))) %*% beta
+```
+
+## Least squares
+
+```{r}
+beta_hat_pure = lm(Y_pure ~ X)$coefficients
+plot(beta_hat_pure[-1])
+points(beta, pch=4)
+
+beta_hat_real = lm(Y_real ~ X)$coefficients 
+plot(beta_hat_real[-1])
+points(beta, pch=4)
+```
+
+## The Lasso estimator
+
+```{r}
+lasso_mod = cv.glmnet(X, Y_real, alpha=1)
+beta_lasso = predict(lasso_mod, type="coefficients", s=lasso_mod$lambda.min)
+```
+
+## Principal components
+
+```{r}
+sing_vals = svd(X)$d
+X_appr = cumsum(sing_vals ^ 2) / sum(sing_vals ^ 2)
+n99 = sum(X_appr <= 0.99)
+
+sing_vals_rand = svd(X_rand)$d
+X_rand_appr = cumsum(sing_vals_rand ^ 2) / sum(sing_vals_rand ^ 2)
+n99_rand = sum(X_rand_appr <= 0.99)
+
+sing_vals_corr = svd(X_corr)$d
+X_corr_appr = cumsum(sing_vals_corr ^ 2) / sum(sing_vals_corr ^ 2)
+n99_corr = sum(X_corr_appr <= 0.99)
+
+pcr.fit = pcr(Y_real ~ X, scale = TRUE, validation="CV") 
+```
 
 ## Test statements
 
